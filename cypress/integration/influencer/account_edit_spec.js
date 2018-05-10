@@ -22,17 +22,17 @@ describe('Verify edit account info', function () {
         cy.get('div.action-edit', {
             timeout: 60000
         }).click()
-        cy.url().should('eq', url + '/profile/edit')
+        cy.url().should('equal', url + '/profile/edit')
     })
 
     context('Verify edit on desktop', function () {
-        it.only('Verify edit text fields with valid data', function () {
+        it('Verify edit text fields with valid data', function () {
             cy.get('#name').clear().type(test_name)
             cy.get('textarea[name="introduce"]').clear().type(test_introduce)
             cy.get('input[name="blogUrl"]').clear().type(test_url)
             cy.get('input[name="phoneNumber"]').clear().type(test_phone)
             cy.get('#updateInfo').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             cy.get('h2').contains(test_name)
             cy.get(':nth-child(3) > .introduce').contains(test_introduce)
@@ -45,7 +45,7 @@ describe('Verify edit account info', function () {
             cy.get('input[name="email"]').clear()
             cy.get('.alert.alert-danger').should('exist')
             cy.get('#updateInfo').click()
-            cy.url().should('eq', url + '/profile/edit')
+            cy.url().should('equal', url + '/profile/edit')
         })
 
         it('Verify edit birthday', function () {
@@ -55,7 +55,7 @@ describe('Verify edit account info', function () {
             cy.get('i[class="icon icon-owl-left-open"]:first').click().click().click()
             cy.get('tbody.ng-tns-c6-0 > :nth-child(2) > :nth-child(4) > .ng-tns-c6-0').click()
             cy.get('#updateInfo').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
         })
 
@@ -64,7 +64,7 @@ describe('Verify edit account info', function () {
             cy.get('select[name="gender"]').select(gender_value.toString())
             cy.get('div > ss-multiselect-dropdown > div > button').click()
             cy.get('#updateInfo').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             if (gender_value == 2) {
                 cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Male')
@@ -88,7 +88,7 @@ describe('Verify edit account info', function () {
             cy.get('@categories').find('a:nth-child(2) > span > span').click()  // beauty
             cy.get('@categories').find('a:nth-child(3) > span > span').click()  // comedy
             cy.get('#updateInfo').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             cy.get(':nth-child(4) > p.introduce_item').invoke('text').then(text => {
                 expect(text.trim()).to.equal('News, Beauty, Comedy')
@@ -104,7 +104,7 @@ describe('Verify edit account info', function () {
             cy.get('input[name="blogUrl"]').clear().type(test_url)
             cy.get('input[name="phoneNumber"]').clear().type(test_phone)
             cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             cy.get('h2').contains(test_name)
             cy.get(':nth-child(3) > .introduce').contains(test_introduce)
@@ -118,7 +118,7 @@ describe('Verify edit account info', function () {
             cy.get('input[name="email"]').clear()
             cy.get('.alert.alert-danger').should('exist')
             cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('eq', url + '/profile/edit')
+            cy.url().should('equal', url + '/profile/edit')
         })
 
         it('Verify edit birthday', function () {
@@ -129,7 +129,7 @@ describe('Verify edit account info', function () {
             cy.get('i[class="icon icon-owl-left-open"]:first').click().click().click()
             cy.get('tbody.ng-tns-c6-0 > :nth-child(2) > :nth-child(4) > .ng-tns-c6-0').click()
             cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
         })
 
@@ -139,7 +139,7 @@ describe('Verify edit account info', function () {
             cy.get('select[name="gender"]').select(gender_value.toString())
             cy.get('div > ss-multiselect-dropdown > div > button').click()
             cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             if (gender_value == 2) {
                 cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Male')
@@ -164,7 +164,7 @@ describe('Verify edit account info', function () {
             cy.get('@categories').find('a:nth-child(2) > span > span').click()  // beauty
             cy.get('@categories').find('a:nth-child(3) > span > span').click()  // comedy
             cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('eq', url + '/profile?update=true')
+            cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
             cy.get(':nth-child(4) > p.introduce_item').invoke('text').then(text => {
                 expect(text.trim()).to.equal('News, Beauty, Comedy')

@@ -177,7 +177,7 @@ describe('Verify account dashboard info', function () {
             cy.get('@edit_button', {
                 timeout: 60000
             }).click()
-            cy.url().should('eq', url + '/profile/edit') // go to edit page to check avatars
+            cy.url().should('equal', url + '/profile/edit') // go to edit page to check avatars
             if (facebook_followers == null) {
                 cy.get('.item_face > .box_color > img').should('not.exist')
             } else {
@@ -359,7 +359,7 @@ describe('Verify account dashboard info', function () {
                 })
             } // check main avatar has priority for facebook
             cy.get('@edit_button_mobile').click()
-            cy.url().should('eq', url + '/profile/edit')
+            cy.url().should('equal', url + '/profile/edit')
             if (facebook_followers == null) {
                 cy.get('.item_face > .box_color > img').should('not.exist')
             } else {

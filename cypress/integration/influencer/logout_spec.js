@@ -19,7 +19,7 @@ describe('Log out', function () {
     it('Select logout on desktop', function () {
         cy.get('.header_right > .logout').click()
         cy.contains('Sign In')
-        cy.url().should('eq', url + '/')
+        cy.url().should('equal', url + '/')
     })
 
     it('Select logout on mobile', function () {
@@ -27,6 +27,6 @@ describe('Log out', function () {
         cy.get('#pageInformation > header > div > div.menu > div:nth-child(2) > i').click()
         cy.get('#listMenu > div').click()
         cy.contains('Sign In')
-        cy.url().should('eq', url + '/')
+        cy.url().should('equal', url + '/')
     })
 })

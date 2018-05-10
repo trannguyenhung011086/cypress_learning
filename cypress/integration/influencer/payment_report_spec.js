@@ -98,7 +98,7 @@ describe('Verify payment report page', function () {
             cy.wait(3000)
             cy.get('app-payment-history > section > section > div.grid > div.grid-body > .row').as('pay_list')
             cy.get('@pay_list').then($rows => {
-                expect($rows.length).to.be.lt(10)
+                expect($rows.length).to.be.lte(10)
             })
             cy.get('@pay_list').each($row => {
                 expect(parseFloat($row.find('div.column-item.item-1 > .price').text())).to.gt(0) // check amount
@@ -190,7 +190,7 @@ describe('Verify payment report page', function () {
             cy.wait(3000)
             cy.get('app-payment-history > section > section > div.grid > div.grid-body > .row').as('pay_list')
             cy.get('@pay_list').then($rows => {
-                expect($rows.length).to.be.lt(10)
+                expect($rows.length).to.be.lte(10)
             })
             cy.get('@pay_list').each($row => {
                 expect(parseFloat($row.find('div.column-item.item-1 > .price').text())).to.gt(0) // check amount

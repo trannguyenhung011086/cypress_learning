@@ -17,7 +17,7 @@ describe('Verify select Facebook fan pages', function () {
         cy.get('div.action-edit', {
             timeout: 60000
         }).click()
-        cy.url().should('eq', url + '/profile/edit')
+        cy.url().should('equal', url + '/profile/edit')
     })
 
     context('Verify select fan pages on desktop', function () {

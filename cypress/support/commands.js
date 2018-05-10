@@ -346,6 +346,20 @@ Cypress.Commands.add('get_influencer_revenue', (postgresToken, influencer) => {
     })
 })
 
+Cypress.Commands.add('get_bank_info', (postgresToken, country) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/cam_bankname?country_id=eq.' + country,
+        headers: {
+            authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body
+    })
+})
+
 Cypress.Commands.add('check_facebook_token', (token) => {
     const options = {
         method: 'GET',
