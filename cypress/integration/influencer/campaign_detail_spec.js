@@ -7,7 +7,7 @@ describe('Verify campaign detail', function () {
         influencer = Cypress.env('influencer'),
         url = Cypress.env('url');
 
-    var postgresToken, cam_id;
+    var postgresToken, cam_id, revenue_limit;
 
     beforeEach(function () {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
@@ -454,6 +454,7 @@ describe('Verify campaign detail', function () {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'instagram' && $body[i].influencer_joined == false && $body[i].status == 'ongoing' && $body[i].influencer_revenue_limit > 0) {
                         cam_id = $body[i].id
+                        revenue_limit = $body[i].influencer_revenue_limit
                         break
                     }
                 }
@@ -463,6 +464,7 @@ describe('Verify campaign detail', function () {
                 cy.visit(url + '/campaign/' + cam_id)
                 // check revenue limit section
                 cy.get('.form_group.revenue_limit').find('div > div').then($revenue_limit => {
+                    expect(parseFloat($revenue_limit.text())).to.equal(Math.round(revenue_limit * 1000) / 1000)
                     // check T&C section popup
                     cy.join_campaign(postgresToken, influencer, cam_id) // call Join API
                     cy.wait(3000)
@@ -857,7 +859,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it.only('Verify multiple images', function () {
+        it('Verify multiple images', function () {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -931,6 +933,7 @@ describe('Verify campaign detail', function () {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'instagram' && $body[i].influencer_joined == false && $body[i].status == 'ongoing' && $body[i].influencer_revenue_limit > 0) {
                         cam_id = $body[i].id
+                        revenue_limit = $body[i].influencer_revenue_limit
                         break
                     }
                 }
@@ -940,6 +943,7 @@ describe('Verify campaign detail', function () {
                 cy.visit(url + '/campaign/' + cam_id)
                 // check revenue limit section
                 cy.get('.form_group.revenue_limit').find('div > div').then($revenue_limit => {
+                    expect(parseFloat($revenue_limit.text())).to.equal(Math.round(revenue_limit * 1000) / 1000)
                     // check T&C section popup
                     cy.join_campaign(postgresToken, influencer, cam_id) // call Join API
                     cy.wait(3000)
