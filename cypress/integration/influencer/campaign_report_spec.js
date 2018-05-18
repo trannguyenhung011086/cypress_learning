@@ -1,4 +1,4 @@
-describe('Verify campaign report page', function () {
+describe('Verify campaign report page', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -10,7 +10,7 @@ describe('Verify campaign report page', function () {
     var postgresToken, cam_list, cam_name, cam_id, revenue,
         current = new Date();
 
-    before(function () {
+    before(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
             cy.search_cami_campaigns_report(postgresToken, influencer).then($body => {
@@ -22,15 +22,15 @@ describe('Verify campaign report page', function () {
         })
     })
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
         cy.visit(url + '/report')
     })
 
-    context('Verify campaign report on desktop', function () {
-        it('Verify campaign filter', function () {
+    context('Verify campaign report on desktop', () => {
+        it('Verify campaign filter', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -138,7 +138,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify social media filter Facebook', function () {
+        it('Verify social media filter Facebook', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -187,7 +187,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify social media filter Instagram', function () {
+        it('Verify social media filter Instagram', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -236,7 +236,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify default period filter', function () {
+        it('Verify default period filter', () => {
             cy.get('.grid-list > div.row-line').should('be.visible').each($cam => {
                 cam_name = $cam.find('.left-info > .row-title > a').text().trim()
                 for (var i = 0; i < cam_list.length; i++) {
@@ -278,7 +278,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify total numbers', function () {
+        it('Verify total numbers', () => {
             var total_view = 0,
                 total_like = 0,
                 total_comment = 0,
@@ -327,7 +327,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify segment by day', function () {
+        it('Verify segment by day', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -350,7 +350,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify segment by month', function () {
+        it('Verify segment by month', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -373,7 +373,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify segment by social media', function () {
+        it('Verify segment by social media', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -398,7 +398,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify revenue', function () {
+        it('Verify revenue', () => {
             cy.get('#period').click()
             cy.get('div.owl-dateTime-inputWrapper > i').click()
             cy.get('div.owl-dateTime-btn.owl-corner-bottomLeft.owl-dateTime-btnConfirm').click() // clear default period filter
@@ -426,8 +426,8 @@ describe('Verify campaign report page', function () {
         })
     })
 
-    context('Verify campaign report on mobile', function () {
-        it('Verify campaign filter', function () {
+    context('Verify campaign report on mobile', () => {
+        it('Verify campaign filter', () => {
             cy.viewport(375, 667)
             cy.get('div.filter_title > div').click()
             cy.get('#period').click()
@@ -540,7 +540,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify social media filter Facebook', function () {
+        it('Verify social media filter Facebook', () => {
             cy.viewport(375, 667)
             cy.get('div.filter_title > div').click()
             cy.get('#period').click()
@@ -594,7 +594,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify social media filter Instagram', function () {
+        it('Verify social media filter Instagram', () => {
             cy.viewport(375, 667)
             cy.get('div.filter_title > div').click()
             cy.get('#period').click()
@@ -648,7 +648,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify default period filter', function () {
+        it('Verify default period filter', () => {
             cy.viewport(375, 667)
             cy.get('.grid-list > div.row-line').should('be.visible').each($cam => {
                 cam_name = $cam.find('.left-info > .row-title > a').text().trim()
@@ -691,7 +691,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify total numbers', function () {
+        it('Verify total numbers', () => {
             cy.viewport(375, 667)
             var total_view = 0,
                 total_like = 0,
@@ -741,7 +741,7 @@ describe('Verify campaign report page', function () {
             })
         })
 
-        it('Verify revenue', function () {
+        it('Verify revenue', () => {
             cy.viewport(375, 667)
             cy.get('div.filter_title > div').click()
             cy.get('#period').click()

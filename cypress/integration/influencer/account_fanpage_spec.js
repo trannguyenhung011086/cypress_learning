@@ -1,4 +1,4 @@
-describe('Verify select Facebook fan pages', function () {
+describe('Verify select Facebook fan pages', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -9,7 +9,7 @@ describe('Verify select Facebook fan pages', function () {
 
     var postgresToken, total_followers;
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
@@ -20,8 +20,8 @@ describe('Verify select Facebook fan pages', function () {
         cy.url().should('equal', url + '/profile/edit')
     })
 
-    context('Verify select fan pages on desktop', function () {
-        it('Verify select personal page only', function () {
+    context('Verify select fan pages on desktop', () => {
+        it('Verify select personal page only', () => {
             // fetch page and select
             cy.get('button.btn.blue').click()
             cy.get('#personalCheckbox').invoke('show').check().should('be.checked')
@@ -45,7 +45,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify select fan page only', function () {
+        it('Verify select fan page only', () => {
             // fetch page and select
             cy.get('button.btn.blue').click()
             cy.get('#fanpage_0').invoke('show').check().should('be.checked')
@@ -69,7 +69,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify select all', function () {
+        it('Verify select all', () => {
             // fetch page and select
             cy.get('button.btn.blue').click()
             cy.get('#fanpage_0').invoke('show').check().should('be.checked')
@@ -97,7 +97,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify at least one page must be checked', function () {
+        it('Verify at least one page must be checked', () => {
             cy.get('button.btn.blue').click()
             // verify uncheck personal page
             cy.get('#personalCheckbox').invoke('show').check()
@@ -112,8 +112,8 @@ describe('Verify select Facebook fan pages', function () {
         })
     })
 
-    context('Verify select fan pages on mobile', function () {
-        it('Verify select personal page only', function () {
+    context('Verify select fan pages on mobile', () => {
+        it('Verify select personal page only', () => {
             cy.viewport(375, 667)
             // fetch page and select
             cy.get('button.btn.blue').click()
@@ -138,7 +138,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify select fan page only', function () {
+        it('Verify select fan page only', () => {
             cy.viewport(375, 667)
             // fetch page and select
             cy.get('button.btn.blue').click()
@@ -163,7 +163,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify select all', function () {
+        it('Verify select all', () => {
             cy.viewport(375, 667)
             // fetch page and select
             cy.get('button.btn.blue').click()
@@ -192,7 +192,7 @@ describe('Verify select Facebook fan pages', function () {
             })
         })
 
-        it('Verify at least one page must be checked', function () {
+        it('Verify at least one page must be checked', () => {
             cy.viewport(375, 667)
             cy.get('button.btn.blue').click()
             // verify uncheck personal page

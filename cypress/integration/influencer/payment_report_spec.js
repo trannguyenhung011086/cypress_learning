@@ -1,4 +1,4 @@
-describe('Verify payment report page', function () {
+describe('Verify payment report page', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -9,7 +9,7 @@ describe('Verify payment report page', function () {
 
     var postgresToken, pay_requests;
 
-    before(function () {
+    before(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
             cy.search_influencer_payment_period(postgresToken, influencer).then($body => {
@@ -23,15 +23,15 @@ describe('Verify payment report page', function () {
         })
     })
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
         cy.visit(url + '/payment')
     })
 
-    context('Verify payment report on desktop', function () {
-        it('Verify default period filter', function () {
+    context('Verify payment report on desktop', () => {
+        it('Verify default period filter', () => {
             cy.get('app-payment-history > section > section > div.grid > div.grid-body > .row').as('pay_list')
             cy.get('@pay_list').then($rows => {
                 expect($rows.length).to.be.lte(pay_requests)
@@ -53,7 +53,7 @@ describe('Verify payment report page', function () {
             })
         })
 
-        it('Verify custom period filter', function () {
+        it('Verify custom period filter', () => {
             // set up fake data in db for influencer report at a specific month first
             cy.get('#period').click()
             // choose 2018
@@ -118,8 +118,8 @@ describe('Verify payment report page', function () {
         })
     })
 
-    context('Verify payment report on mobile', function () {
-        it('Verify default period filter', function () {
+    context('Verify payment report on mobile', () => {
+        it('Verify default period filter', () => {
             cy.viewport(375, 667)
             cy.get('app-payment-history > section > section > div.grid > div.grid-body > .row').as('pay_list')
             cy.get('@pay_list').then($rows => {
@@ -142,7 +142,7 @@ describe('Verify payment report page', function () {
             })
         })
 
-        it('Verify custom period filter', function () {
+        it('Verify custom period filter', () => {
             cy.viewport(375, 667)
             // set up fake data in db for influencer report at a specific month first
             cy.get('div.filter_title > div').click()

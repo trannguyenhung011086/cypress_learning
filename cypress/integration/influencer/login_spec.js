@@ -1,9 +1,9 @@
-describe('Verify login flow', function () {
+describe('Verify login flow', () => {
     const influencer = Cypress.env('influencer'),
         url = Cypress.env('url');
 
-    context('Verify login using API', function () {
-        it('Verify loging existing account with Facebook', function () {
+    context('Verify login using API', () => {
+        it('Verify loging existing account with Facebook', () => {
             const accessToken = Cypress.env('facebook')['accessToken'],
                 userID = Cypress.env('facebook')['userID'],
                 signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -12,12 +12,12 @@ describe('Verify login flow', function () {
             cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer)
         })
 
-        it('Verify loging existing account with Instagram', function () {
+        it('Verify loging existing account with Instagram', () => {
             const access_token = Cypress.env('instagram')['access_token'];
             cy.login_instagram(access_token, influencer)
         })
 
-        it('Verify login existing account with Twitter', function () {
+        it('Verify login existing account with Twitter', () => {
             const oauth_token = Cypress.env('twitter')['oauth_token'],
                 oauth_token_secret = Cypress.env('twitter')['oauth_token_secret'],
                 user_id = Cypress.env('twitter')['user_id'],
@@ -28,7 +28,7 @@ describe('Verify login flow', function () {
         })
     })
 
-    context('Verify login using UI', function () {
+    context('Verify login using UI', () => {
         // to do with iframe https://github.com/cypress-io/cypress/issues/136, https://github.com/cypress-io/cypress/issues/1433
 
         // cy.get('#storybook-preview-iframe').then(($iframe) => {

@@ -1,4 +1,4 @@
-describe('Verify account dashboard info', function () {
+describe('Verify account dashboard info', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -14,7 +14,7 @@ describe('Verify account dashboard info', function () {
         youtube_comments, youtube_likes, youtube_views, total_audience, reach, avg_age,
         gender_list, nation_list, female_count, male_count, female_percent, male_percent;
 
-    before(function () {
+    before(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
             cy.get_influencers_detail_view_influencer_frontend(postgresToken, influencer).then($body => {
@@ -84,12 +84,12 @@ describe('Verify account dashboard info', function () {
         })
     })
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
         cy.visit(url + '/profile')
-        cy.get('div.basic-info > div:nth-child(4) > p').as('category')
+        cy.get('div.basic-info > div:nth-child(4) > p', {'timeout': 30000}).as('category')
         cy.get('div.basic-info > div:nth-child(3) > p').as('introduce')
         cy.get('div.basic-info > div:nth-child(2) > ul > li:nth-child(1) > p').as('age')
         cy.get('div.basic-info > div:nth-child(2) > ul > li:nth-child(2) > p').as('gender')
@@ -121,8 +121,8 @@ describe('Verify account dashboard info', function () {
         cy.get('.sns_infomation_countries').as('countries')
     })
 
-    context('Verify dashboard on desktop', function () {
-        it('Verify personal info', function () {
+    context('Verify dashboard on desktop', () => {
+        it('Verify personal info', () => {
             cy.get('@category').invoke('text').then(text => {
                 text = text.split(',')
                 for (var i in text) {
@@ -168,7 +168,7 @@ describe('Verify account dashboard info', function () {
             })
         })
 
-        it('Verify social network avatar', function () {
+        it('Verify social network avatar', () => {
             if (facebook_followers > 0) {
                 cy.get('@main_avatar').then($el => {
                     expect($el.attr('style')).to.include(facebook_avatar)
@@ -200,7 +200,7 @@ describe('Verify account dashboard info', function () {
             }
         })
 
-        it('Verify social network reach and engagement', function () {
+        it('Verify social network reach and engagement', () => {
             cy.get('@total_reach').invoke('text').then(text => {
                 expect(Math.round(reach)).to.equal(parseInt(text))
             })
@@ -258,7 +258,7 @@ describe('Verify account dashboard info', function () {
             }
         })
 
-        it('Verify social network audience', function () {
+        it('Verify social network audience', () => {
             var total = 0;
             cy.get('@total_audience').invoke('text').then(text => {
                 expect(total_audience).to.equal(parseInt(text))
@@ -303,8 +303,8 @@ describe('Verify account dashboard info', function () {
         })
     })
 
-    context('Verify dashboard on mobile', function () {
-        it('Verify personal info', function () {
+    context('Verify dashboard on mobile', () => {
+        it('Verify personal info', () => {
             cy.viewport(375, 667)
             cy.get('@category').invoke('text').then(text => {
                 text = text.split(',')
@@ -351,7 +351,7 @@ describe('Verify account dashboard info', function () {
             })
         })
 
-        it('Verify social network avatar', function () {
+        it('Verify social network avatar', () => {
             cy.viewport(375, 667)
             if (facebook_followers > 0) {
                 cy.get('@main_avatar').then($el => {
@@ -382,7 +382,7 @@ describe('Verify account dashboard info', function () {
             }
         })
 
-        it('Verify social network reach and engagement', function () {
+        it('Verify social network reach and engagement', () => {
             cy.viewport(375, 667)
             cy.get('@total_reach').invoke('text').then(text => {
                 expect(Math.round(reach)).to.equal(parseInt(text))
@@ -441,7 +441,7 @@ describe('Verify account dashboard info', function () {
             }
         })
 
-        it('Verify social network audience', function () {
+        it('Verify social network audience', () => {
             cy.viewport(375, 667)
             var total = 0;
             cy.get('@total_audience').invoke('text').then(text => {

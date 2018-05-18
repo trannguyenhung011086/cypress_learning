@@ -1,4 +1,4 @@
-describe('Verify campaign list', function () {
+describe('Verify campaign list', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -15,7 +15,7 @@ describe('Verify campaign list', function () {
         cam_list,
         cam_amount;
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -26,8 +26,8 @@ describe('Verify campaign list', function () {
         cy.visit(url + '/campaign')
     })
 
-    context('Verify campaign list on desktop', function () {
-        it('Verify display order by ending soonest time', function () {
+    context('Verify campaign list on desktop', () => {
+        it('Verify display order by ending soonest time', () => {
             var start_1, end_1, start_2, end_2;
             cy.get('.campaigns_list > a').each($card => {
                 start_1 = (new Date($card.find('.from.date > .day_month').text() + ' ' + $card.find('.from.date > .year').text())).getTime()
@@ -41,7 +41,7 @@ describe('Verify campaign list', function () {
             })            
         })
 
-        it('Verify filter by valid keyword', function () {
+        it('Verify filter by valid keyword', () => {
             const keyword = 'test'
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -60,7 +60,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by invalid keyword', function () {
+        it('Verify filter by invalid keyword', () => {
             const keyword = ['<script>alert("text")</script>', '#$$&^@#(*$*@#!@#$#!']
             for (var i in keyword) {
                 cy.get_campaigns(postgresToken, influencer, categories, keyword[i], social_medias).then($cam_list => {
@@ -76,7 +76,7 @@ describe('Verify campaign list', function () {
             }
         })
 
-        it('Verify filter by social network Facebook', function () {
+        it('Verify filter by social network Facebook', () => {
             const social_medias = ['facebook']
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -98,7 +98,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by social network Instagram', function () {
+        it('Verify filter by social network Instagram', () => {
             const social_medias = ['instagram']
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -120,7 +120,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by one category', function () {
+        it('Verify filter by one category', () => {
             const categories = [1] // news
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -141,7 +141,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by categories', function () {
+        it('Verify filter by categories', () => {
             const categories = [1, 5, 7] // news, fanpage, food
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -168,7 +168,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by status Joined', function () {
+        it('Verify filter by status Joined', () => {
             cy.get_campaigns_joined(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
                 expect(cam_amount).to.be.gte(cam_amount_filter)
@@ -187,7 +187,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by status Not Joined', function () {
+        it('Verify filter by status Not Joined', () => {
             cy.get_campaigns_not_joined(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
                 expect(cam_amount).to.be.gte(cam_amount_filter)
@@ -210,7 +210,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify campaign card info', function () {
+        it('Verify campaign card info', () => {
             cy.wait(3000)
             cy.get('.campaigns_list > a').each($card => {
                 expect($card.find('a > .campaign_img').attr('style')).to.include('https://storage.googleapis.com/casting-asia-v2/campaign/') // check thumbnail
@@ -233,7 +233,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify pagination', function () {
+        it('Verify pagination', () => {
             cy.get('ul.pagination > li').then($li => {
                 $li = $li.length
                 // check current page is 1st page
@@ -257,8 +257,8 @@ describe('Verify campaign list', function () {
         })
     })
 
-    context('Verify campaign list on mobile', function () {
-        it('Verify display order by ending soonest time', function () {
+    context('Verify campaign list on mobile', () => {
+        it('Verify display order by ending soonest time', () => {
             cy.viewport(375, 667)
             var start_1, end_1, start_2, end_2;
             cy.get('.campaigns_list > a').each($card => {
@@ -273,7 +273,7 @@ describe('Verify campaign list', function () {
             })            
         })
 
-        it('Verify filter by valid keyword', function () {
+        it('Verify filter by valid keyword', () => {
             cy.viewport(375, 667)
             const keyword = 'test'
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -294,7 +294,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by invalid keyword', function () {
+        it('Verify filter by invalid keyword', () => {
             const keyword = ['<script>alert("text")</script>', '#$$&^@#(*$*@#!@#$#!']
             cy.viewport(375, 667)
             for (var i in keyword) {
@@ -313,7 +313,7 @@ describe('Verify campaign list', function () {
             }
         })
 
-        it('Verify filter by social network Facebook', function () {
+        it('Verify filter by social network Facebook', () => {
             const social_medias = ['facebook']
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -338,7 +338,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by social network Instagram', function () {
+        it('Verify filter by social network Instagram', () => {
             const social_medias = ['instagram']
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -363,7 +363,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by one category', function () {
+        it('Verify filter by one category', () => {
             const categories = [1] // news
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -387,7 +387,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by categories', function () {
+        it('Verify filter by categories', () => {
             const categories = [1, 5, 7] // news, fanpage, food
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
@@ -417,7 +417,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by status Joined', function () {
+        it('Verify filter by status Joined', () => {
             cy.viewport(375, 667)
             cy.get_campaigns_joined(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -439,7 +439,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify filter by status Not Joined', function () {
+        it('Verify filter by status Not Joined', () => {
             cy.viewport(375, 667)
             cy.get_campaigns_not_joined(postgresToken, influencer, categories, keyword, social_medias).then($cam_list => {
                 var cam_amount_filter = $cam_list.length
@@ -465,7 +465,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify campaign card info', function () {
+        it('Verify campaign card info', () => {
             cy.viewport(375, 667)
             cy.get('.filter_title > div').click()
             cy.get('.filter_item.item_4 > select').select('2') // 2: Not Joined
@@ -492,7 +492,7 @@ describe('Verify campaign list', function () {
             })
         })
 
-        it('Verify pagination', function () {
+        it('Verify pagination', () => {
             cy.viewport(375, 667)
             cy.get('ul.pagination > li').then($li => {
                 $li = $li.length

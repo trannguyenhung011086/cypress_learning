@@ -3,10 +3,13 @@
     "defaultCommandTimeout": 30000,
     "viewportWidth": 1280,
     "viewportHeight": 720,
-    "reporter": "spec",
+    "reporter": "mochawesome",
     "reporterOptions": {
-        "mochaFile": "results/my-test-output.xml",
-        "toConsole": true
+        "reportFilename": "ca_test",
+        "reportTitle": "Casting Asia Autotest",
+        "reportDir": "cypress/mochawesome-report",
+        "timestamp": true,
+        "autoOpen": true
     },
     "projectId": "if2cyt",
     "videoRecording": false,

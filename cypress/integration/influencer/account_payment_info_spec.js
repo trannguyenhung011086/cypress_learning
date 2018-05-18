@@ -1,4 +1,4 @@
-describe('Verify payment info', function () {
+describe('Verify payment info', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -10,7 +10,7 @@ describe('Verify payment info', function () {
 
     var postgresToken, bank_list;
 
-    before(function () {
+    before(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
             cy.get_bank_info(postgresToken, country).then($body => {
@@ -19,7 +19,7 @@ describe('Verify payment info', function () {
         })
     })
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
@@ -38,8 +38,8 @@ describe('Verify payment info', function () {
         cy.get('div.form_group.payment > div:nth-child(6) > div:nth-child(2)').as('postal')
     })
 
-    context('Verify update payment info on desktop', function () {
-        it('Verify payment email is prefilled from influencer email', function () {
+    context('Verify update payment info on desktop', () => {
+        it('Verify payment email is prefilled from influencer email', () => {
             cy.get('@payment_email').find('input').invoke('attr', 'ng-reflect-model').then($payment_email => {
                 cy.get('div.form_info > div.form_left > div:nth-child(4) > input').invoke('attr', 'ng-reflect-model').then($email => {
                     expect($payment_email).to.equal($email)
@@ -47,7 +47,7 @@ describe('Verify payment info', function () {
             })
         })
 
-        it('Verify all payment info are required', function () {
+        it('Verify all payment info are required', () => {
             cy.get('@bank').find('select').select(bank_list[0]['institution']) // select first bank
             cy.get('#updateInfo').click()
             cy.get('@bank').find('select').select('Select your bank')
@@ -60,14 +60,14 @@ describe('Verify payment info', function () {
             cy.get('@postal').find('.alert.alert-danger').should('be.visible') 
         })
 
-        it('Verify update payment info', function () {
+        it('Verify update payment info', () => {
             cy.get('@bank').find('select').select(bank_list[0]['institution']) // select first bank
             cy.get('@branch')
         })
     })
 
-    context('Verify update payment info on mobile', function () {
-        it('Verify payment email is prefilled from influencer email', function () {
+    context('Verify update payment info on mobile', () => {
+        it('Verify payment email is prefilled from influencer email', () => {
             cy.viewport(375, 667)
             cy.get('@payment_email').find('input').invoke('attr', 'ng-reflect-model').then($payment_email => {
                 cy.get('div.form_info > div.form_left > div:nth-child(4) > input').invoke('attr', 'ng-reflect-model').then($email => {
@@ -76,7 +76,7 @@ describe('Verify payment info', function () {
             })
         })
 
-        it('Verify all payment info are required', function () {
+        it('Verify all payment info are required', () => {
             cy.viewport(375, 667)
             cy.get('@bank').find('select').select(bank_list[0]['institution']) // select first bank
             cy.get('.content_breadcrumbs > .btn').click()

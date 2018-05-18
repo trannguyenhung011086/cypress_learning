@@ -1,4 +1,4 @@
-describe('Verify edit account info', function () {    
+describe('Verify edit account info', () => {    
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -14,7 +14,7 @@ describe('Verify edit account info', function () {
         test_phone = randomInt.toString().repeat(5),
         postgresToken;
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
@@ -25,8 +25,8 @@ describe('Verify edit account info', function () {
         cy.url().should('equal', url + '/profile/edit')
     })
 
-    context('Verify edit on desktop', function () {
-        it('Verify edit text fields with valid data', function () {
+    context('Verify edit on desktop', () => {
+        it('Verify edit text fields with valid data', () => {
             cy.get('#name').clear().type(test_name)
             cy.get('textarea[name="introduce"]').clear().type(test_introduce)
             cy.get('input[name="blogUrl"]').clear().type(test_url)
@@ -38,7 +38,7 @@ describe('Verify edit account info', function () {
             cy.get(':nth-child(3) > .introduce').contains(test_introduce)
         })
 
-        it('Verify edit required text fields with empty data', function () {
+        it('Verify edit required text fields with empty data', () => {
             cy.get('#name').clear()
             cy.get('.alert > div').should('exist')
             cy.get('#name').type(test_name)
@@ -48,7 +48,7 @@ describe('Verify edit account info', function () {
             cy.url().should('equal', url + '/profile/edit')
         })
 
-        it('Verify edit birthday', function () {
+        it('Verify edit birthday', () => {
             cy.get('#birthDay').click()
             cy.get('.owl-calendar-control').should('visible')
             cy.get('i[class="icon icon-owl-right-open"]:first').click().click()
@@ -59,7 +59,7 @@ describe('Verify edit account info', function () {
             cy.get('.mess-congrats').should('exist')
         })
 
-        it('Verify edit gender', function () {
+        it('Verify edit gender', () => {
             var gender_value = Math.floor(Math.random() * Math.floor(2))
             cy.get('select[name="gender"]').select(gender_value.toString())
             cy.get('div > ss-multiselect-dropdown > div > button').click()
@@ -75,7 +75,7 @@ describe('Verify edit account info', function () {
             }
         })
          
-        it('Verify edit categories', function () {
+        it('Verify edit categories', () => {
             cy.get('.dropdown-toggle').click()
             cy.get('ss-multiselect-dropdown > div > .dropdown-menu').as('categories')
             cy.get('@categories').find('a').should('have.length', 19).each($el => {
@@ -96,8 +96,8 @@ describe('Verify edit account info', function () {
         })
     })
 
-    context('Verify edit on mobile', function () {
-        it('Verify edit text fields with valid data', function () {
+    context('Verify edit on mobile', () => {
+        it('Verify edit text fields with valid data', () => {
             cy.viewport(375, 667)
             cy.get('#name').clear().type(test_name)
             cy.get('textarea[name="introduce"]').clear().type(test_introduce)
@@ -110,7 +110,7 @@ describe('Verify edit account info', function () {
             cy.get(':nth-child(3) > .introduce').contains(test_introduce)
         })
 
-        it('Verify edit required text fields with empty data', function () {
+        it('Verify edit required text fields with empty data', () => {
             cy.viewport(375, 667)
             cy.get('#name').clear()
             cy.get('.alert > div').should('exist')
@@ -121,7 +121,7 @@ describe('Verify edit account info', function () {
             cy.url().should('equal', url + '/profile/edit')
         })
 
-        it('Verify edit birthday', function () {
+        it('Verify edit birthday', () => {
             cy.viewport(375, 667)
             cy.get('#birthDay').click()
             cy.get('.owl-calendar-control').should('visible')
@@ -133,7 +133,7 @@ describe('Verify edit account info', function () {
             cy.get('.mess-congrats').should('exist')
         })
 
-        it('Verify edit gender', function () {
+        it('Verify edit gender', () => {
             var gender_value = Math.floor(Math.random() * Math.floor(2))
             cy.viewport(375, 667)
             cy.get('select[name="gender"]').select(gender_value.toString())
@@ -150,7 +150,7 @@ describe('Verify edit account info', function () {
             }
         })
 
-        it('Verify edit categories', function () {
+        it('Verify edit categories', () => {
             cy.viewport(375, 667)
             cy.get('.dropdown-toggle').click()
             cy.get('ss-multiselect-dropdown > div > .dropdown-menu').as('categories')

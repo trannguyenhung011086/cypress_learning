@@ -1,4 +1,4 @@
-describe('Verify campaign detail', function () {
+describe('Verify campaign detail', () => {
     const accessToken = Cypress.env('facebook')['accessToken'],
         userID = Cypress.env('facebook')['userID'],
         signedRequest = Cypress.env('facebook')['signedRequest'],
@@ -9,14 +9,14 @@ describe('Verify campaign detail', function () {
 
     var postgresToken, cam_id, revenue_limit;
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
         })
     })
 
-    context('Verify campaign detail on desktop', function () {
-        it('Verify basic campaign info', function () {
+    context('Verify campaign detail on desktop', () => {
+        it('Verify basic campaign info', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].status == 'ongoing') {
@@ -90,7 +90,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Joined status', function () {
+        it('Verify Joined status', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].influencer_joined == true && $body[i].status == 'ongoing') {
@@ -115,7 +115,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify rules popup', function () {
+        it('Verify rules popup', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].influencer_joined == true && $body[i].status == 'ongoing') {
@@ -160,7 +160,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Not Joined status', function () {
+        it('Verify Not Joined status', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].influencer_joined == false && $body[i].status == 'ongoing') {
@@ -187,7 +187,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify joining popup', function () {
+        it('Verify joining popup', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'instagram' && $body[i].influencer_joined == false && $body[i].status == 'ongoing') {
@@ -232,7 +232,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Upcoming status', function () {
+        it('Verify Upcoming status', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].influencer_joined == false && $body[i].status == 'planning') {
@@ -254,7 +254,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify social network Facebook', function () {
+        it('Verify social network Facebook', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'facebook' && $body[i].status == 'ongoing') {
@@ -300,7 +300,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify social network Instagram', function () {
+        it('Verify social network Instagram', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'instagram' && $body[i].status == 'ongoing') {
@@ -346,7 +346,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify blank image', function () {
+        it('Verify blank image', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].medias.length == 1 && $body[i].status == 'ongoing') {
@@ -363,7 +363,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify one image', function () {
+        it('Verify one image', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].medias.length == 2 && $body[i].status == 'ongoing') {
@@ -383,7 +383,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify multiple images', function () {
+        it('Verify multiple images', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].medias.length > 2 && $body[i].status == 'ongoing') {
@@ -413,7 +413,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify campaign period', function () {
+        it('Verify campaign period', () => {
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
                     if ($body[i].social_media_list[0] == 'instagram' && $body[i].influencer_joined == false && $body[i].status == 'ongoing') {
@@ -448,7 +448,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify revenue limit', function () {
+        it.only('Verify revenue limit', () => {
             // find ongoing campaign with revenue limit not null
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -481,8 +481,8 @@ describe('Verify campaign detail', function () {
         })
     })
 
-    context('Verify campaign detail on mobile', function () {
-        it('Verify basic campaign info', function () {
+    context('Verify campaign detail on mobile', () => {
+        it('Verify basic campaign info', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -557,7 +557,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Joined status', function () {
+        it('Verify Joined status', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -583,7 +583,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify rules popup', function () {
+        it('Verify rules popup', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -629,7 +629,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Not Joined status', function () {
+        it('Verify Not Joined status', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -657,7 +657,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify joining popup', function () {
+        it('Verify joining popup', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -703,7 +703,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify Upcoming status', function () {
+        it('Verify Upcoming status', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -726,7 +726,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify social network Facebook', function () {
+        it('Verify social network Facebook', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -773,7 +773,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify social network Instagram', function () {
+        it('Verify social network Instagram', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -820,7 +820,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify blank image', function () {
+        it('Verify blank image', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -838,7 +838,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify one image', function () {
+        it('Verify one image', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -859,7 +859,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify multiple images', function () {
+        it('Verify multiple images', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -890,7 +890,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify campaign period', function () {
+        it('Verify campaign period', () => {
             cy.viewport(375, 667)
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
@@ -926,7 +926,7 @@ describe('Verify campaign detail', function () {
             })
         })
 
-        it('Verify revenue limit', function () {
+        it('Verify revenue limit', () => {
             cy.viewport(375, 667)
             // find ongoing campaign with revenue limit not null
             cy.get_campaigns(postgresToken, influencer).then($body => {
