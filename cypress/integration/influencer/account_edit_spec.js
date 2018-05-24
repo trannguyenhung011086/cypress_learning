@@ -14,161 +14,164 @@ describe('Verify edit account info', () => {
         test_phone = randomInt.toString().repeat(5),
         postgresToken;
 
+    // log in and load profile page
     beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
+            cy.get_facebook_token(postgresToken, influencer)
         })
         cy.visit(url + '/profile')
-        cy.get('div.action-edit', {
+    })
+
+    // helper functions used in test cases
+    function click_edit(env='desktop') {
+        if (env == 'mobile') {
+            cy.get('.btn').as('edit_button')
+        } else {
+            cy.get('div.action-edit').as('edit_button')
+        }
+        cy.get('@edit_button', {
             timeout: 60000
         }).click()
         cy.url().should('equal', url + '/profile/edit')
-    })
+    }
 
-    context('Verify edit on desktop', () => {
-        it('Verify edit text fields with valid data', () => {
-            cy.get('#name').clear().type(test_name)
-            cy.get('textarea[name="introduce"]').clear().type(test_introduce)
-            cy.get('input[name="blogUrl"]').clear().type(test_url)
-            cy.get('input[name="phoneNumber"]').clear().type(test_phone)
-            cy.get('#updateInfo').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            cy.get('h2').contains(test_name)
-            cy.get(':nth-child(3) > .introduce').contains(test_introduce)
-        })
+    function click_update(env='desktop') {
+        if (env == 'mobile') {
+            cy.get('.content_breadcrumbs > .btn').as('update_button')
+        } else {
+            cy.get('#updateInfo').as('update_button')
+        }
+        cy.get('@update_button').click()
+    }
 
-        it('Verify edit required text fields with empty data', () => {
-            cy.get('#name').clear()
-            cy.get('.alert > div').should('exist')
-            cy.get('#name').type(test_name)
-            cy.get('input[name="email"]').clear()
-            cy.get('.alert.alert-danger').should('exist')
-            cy.get('#updateInfo').click()
-            cy.url().should('equal', url + '/profile/edit')
-        })
+    function edit_valid_data(env='desktop') {
+        cy.get('#name').clear().type(test_name)
+        cy.get('textarea[name="introduce"]').clear().type(test_introduce)
+        cy.get('input[name="blogUrl"]').clear().type(test_url)
+        cy.get('input[name="phoneNumber"]').clear().type(test_phone)
+        click_update(env)
+        cy.url().should('equal', url + '/profile?update=true')
+        cy.get('.mess-congrats').should('exist')
+        cy.get('h2').contains(test_name)
+        cy.get(':nth-child(3) > .introduce').contains(test_introduce)
+    }
 
-        it('Verify edit birthday', () => {
-            cy.get('#birthDay').click()
+    function edit_empty_data(env='desktop') {
+        cy.get('#name').clear()
+        cy.get('.alert > div').should('exist')
+        cy.get('#name').type(test_name)
+        cy.get('input[name="email"]').clear()
+        cy.get('.alert.alert-danger').should('exist')
+        click_update(env)
+        cy.url().should('equal', url + '/profile/edit')
+    }
+
+    function edit_birthday(env='desktop') {
+        cy.get('#birthDay').click()
             cy.get('.owl-calendar-control').should('visible')
             cy.get('i[class="icon icon-owl-right-open"]:first').click().click()
             cy.get('i[class="icon icon-owl-left-open"]:first').click().click().click()
             cy.get('tbody.ng-tns-c6-0 > :nth-child(2) > :nth-child(4) > .ng-tns-c6-0').click()
-            cy.get('#updateInfo').click()
+            click_update(env)
             cy.url().should('equal', url + '/profile?update=true')
             cy.get('.mess-congrats').should('exist')
+    }
+
+    function edit_gender(env='desktop') {
+        var gender_value = Math.floor(Math.random() * Math.floor(2))
+        cy.get('select[name="gender"]').select(gender_value.toString())
+        cy.get('div > ss-multiselect-dropdown > div > button').click()
+        click_update(env)
+        cy.url().should('equal', url + '/profile?update=true')
+        cy.get('.mess-congrats').should('exist')
+        if (gender_value == 2) {
+            cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Male')
+        } else if (gender_value == 0) {
+            cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Other')
+        } else if (gender_value == 1) {
+            cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Female')
+        }
+    }
+
+    function edit_categories(env='desktop') {
+        cy.get('.dropdown-toggle').click()
+        cy.get('ss-multiselect-dropdown > div > .dropdown-menu').as('categories')
+        cy.get('@categories').find('a').should('have.length', 19).each($el => {
+            if ($el.attr('class') == 'dropdown-item active') {
+                cy.wrap($el.find('span > span')).click()
+            }
+        }) // uncheck all categories
+        cy.get('.multi-select > .alert').should('exist')
+        cy.get('@categories').find('a:nth-child(1) > span > span').click()  // news
+        cy.get('@categories').find('a:nth-child(2) > span > span').click()  // beauty
+        cy.get('@categories').find('a:nth-child(3) > span > span').click()  // comedy
+        click_update(env)
+        cy.url().should('equal', url + '/profile?update=true')
+        cy.get('.mess-congrats').should('exist')
+        cy.get(':nth-child(4) > p.introduce_item').invoke('text').then(text => {
+            expect(text.trim()).to.equal('News, Beauty, Comedy')
+        })
+    }
+
+    // test cases for desktop theme
+    context('Verify edit on desktop', () => {
+        it('Verify edit text fields with valid data', () => {
+            click_edit()
+            edit_valid_data()
+        })
+
+        it('Verify edit required text fields with empty data', () => {
+            click_edit()
+            edit_empty_data()
+        })
+
+        it('Verify edit birthday', () => {
+            click_edit()
+            edit_birthday()
         })
 
         it('Verify edit gender', () => {
-            var gender_value = Math.floor(Math.random() * Math.floor(2))
-            cy.get('select[name="gender"]').select(gender_value.toString())
-            cy.get('div > ss-multiselect-dropdown > div > button').click()
-            cy.get('#updateInfo').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            if (gender_value == 2) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Male')
-            } else if (gender_value == 0) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Other')
-            } else if (gender_value == 1) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Female')
-            }
+            click_edit()
+            edit_gender()
         })
          
         it('Verify edit categories', () => {
-            cy.get('.dropdown-toggle').click()
-            cy.get('ss-multiselect-dropdown > div > .dropdown-menu').as('categories')
-            cy.get('@categories').find('a').should('have.length', 19).each($el => {
-                if ($el.attr('class') == 'dropdown-item active') {
-                    cy.wrap($el.find('span > span')).click()
-                }
-            }) // uncheck all categories
-            cy.get('.multi-select > .alert').should('exist')
-            cy.get('@categories').find('a:nth-child(1) > span > span').click()  // news
-            cy.get('@categories').find('a:nth-child(2) > span > span').click()  // beauty
-            cy.get('@categories').find('a:nth-child(3) > span > span').click()  // comedy
-            cy.get('#updateInfo').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            cy.get(':nth-child(4) > p.introduce_item').invoke('text').then(text => {
-                expect(text.trim()).to.equal('News, Beauty, Comedy')
-            })
+            click_edit()
+            edit_categories()
         })
     })
 
+    // test cases for mobile theme
     context('Verify edit on mobile', () => {
         it('Verify edit text fields with valid data', () => {
             cy.viewport(375, 667)
-            cy.get('#name').clear().type(test_name)
-            cy.get('textarea[name="introduce"]').clear().type(test_introduce)
-            cy.get('input[name="blogUrl"]').clear().type(test_url)
-            cy.get('input[name="phoneNumber"]').clear().type(test_phone)
-            cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            cy.get('h2').contains(test_name)
-            cy.get(':nth-child(3) > .introduce').contains(test_introduce)
+            click_edit('mobile')
+            edit_valid_data('mobile')
         })
 
         it('Verify edit required text fields with empty data', () => {
             cy.viewport(375, 667)
-            cy.get('#name').clear()
-            cy.get('.alert > div').should('exist')
-            cy.get('#name').type(test_name)
-            cy.get('input[name="email"]').clear()
-            cy.get('.alert.alert-danger').should('exist')
-            cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('equal', url + '/profile/edit')
+            click_edit('mobile')
+            edit_empty_data('mobile')
         })
 
         it('Verify edit birthday', () => {
             cy.viewport(375, 667)
-            cy.get('#birthDay').click()
-            cy.get('.owl-calendar-control').should('visible')
-            cy.get('i[class="icon icon-owl-right-open"]:first').click().click()
-            cy.get('i[class="icon icon-owl-left-open"]:first').click().click().click()
-            cy.get('tbody.ng-tns-c6-0 > :nth-child(2) > :nth-child(4) > .ng-tns-c6-0').click()
-            cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
+            click_edit('mobile')
+            edit_birthday('mobile')
         })
 
         it('Verify edit gender', () => {
-            var gender_value = Math.floor(Math.random() * Math.floor(2))
             cy.viewport(375, 667)
-            cy.get('select[name="gender"]').select(gender_value.toString())
-            cy.get('div > ss-multiselect-dropdown > div > button').click()
-            cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            if (gender_value == 2) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Male')
-            } else if (gender_value == 0) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Other')
-            } else if (gender_value == 1) {
-                cy.get(':nth-child(2) > ul > :nth-child(2) > p:first').invoke('text').should('equal', 'Female')
-            }
+            click_edit('mobile')
+            edit_gender('mobile')
         })
 
         it('Verify edit categories', () => {
             cy.viewport(375, 667)
-            cy.get('.dropdown-toggle').click()
-            cy.get('ss-multiselect-dropdown > div > .dropdown-menu').as('categories')
-            cy.get('@categories').find('a').should('have.length', 19).each($el => {
-                if ($el.attr('class') == 'dropdown-item active') {
-                    cy.wrap($el.find('span > span')).click()
-                }
-            }) // uncheck all categories
-            cy.get('.multi-select > .alert').should('exist')
-            cy.get('@categories').find('a:nth-child(1) > span > span').click()  // news
-            cy.get('@categories').find('a:nth-child(2) > span > span').click()  // beauty
-            cy.get('@categories').find('a:nth-child(3) > span > span').click()  // comedy
-            cy.get('.content_breadcrumbs > .btn').click()
-            cy.url().should('equal', url + '/profile?update=true')
-            cy.get('.mess-congrats').should('exist')
-            cy.get(':nth-child(4) > p.introduce_item').invoke('text').then(text => {
-                expect(text.trim()).to.equal('News, Beauty, Comedy')
-            })
+            click_edit('mobile')
+            edit_categories('mobile')
         })
     })
 })

@@ -64,6 +64,20 @@ Cypress.Commands.add('login_adv', (email, pass) => {
     })
 })
 
+Cypress.Commands.add('get_facebook_token', (postgresToken, influencer) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/get_facebook_token?influencer_id=eq.' + influencer,
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.eq(200)
+        expect(resp.body[0].influencer_id).to.eq(parseInt(influencer))
+    })
+})
+
 Cypress.Commands.add('login_facebook', (accessToken, userID, signedRequest, client_id, client_secret, influencer) => {
     const options = {
         method: 'POST',
@@ -160,7 +174,7 @@ Cypress.Commands.add('get_influencers_social_medias_view', (postgresToken, influ
         method: 'GET',
         url: Cypress.env('api_host') + '/influencers_social_medias_view?influencer_id=eq.' + influencer,
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -174,7 +188,7 @@ Cypress.Commands.add('get_influencers_social_media_detail_view', (postgresToken,
         method: 'GET',
         url: Cypress.env('api_host') + '/influencers_social_media_detail_view?id=eq.' + influencer + '&is_fanpage=eq.false',
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -188,7 +202,7 @@ Cypress.Commands.add('get_influencer_followers_analytics', (postgresToken, influ
         method: 'POST',
         url: Cypress.env('api_host') + '/rpc/influencer_followers_analytics',
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         },
         body: {
             "influencer_id": parseInt(influencer)
@@ -205,7 +219,21 @@ Cypress.Commands.add('get_influencers_detail_view_influencer_frontend', (postgre
         method: 'GET',
         url: Cypress.env('api_host') + '/influencers_detail_view_influencer_frontend?id=eq.' + influencer,
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body
+    })
+})
+
+Cypress.Commands.add('get_influencers_top_posts', (postgresToken, influencer) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/influencers_top_posts?influencer_id=eq.' + influencer + '&limit=6',
+        headers: {
+            Authorization: 'Bearer ' + postgresToken 
         }
     }
     cy.request(options).then(resp => {
@@ -225,7 +253,7 @@ Cypress.Commands.add('get_campaigns', (postgresToken, influencer, categories = n
             "social_medias": social_medias
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -245,7 +273,7 @@ Cypress.Commands.add('get_campaigns_joined', (postgresToken, influencer, categor
             "social_medias": social_medias
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -265,7 +293,7 @@ Cypress.Commands.add('get_campaigns_not_joined', (postgresToken, influencer, cat
             "social_medias": social_medias
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -283,7 +311,7 @@ Cypress.Commands.add('get_cam_influencer_campaign_detail', (postgresToken, influ
             "campaign_id": parseInt(campaign),
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -302,7 +330,7 @@ Cypress.Commands.add('search_influencer_payment_period', (postgresToken, influen
             "end_period": end_period
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -323,7 +351,7 @@ Cypress.Commands.add('search_cami_campaigns_report', (postgresToken, influencer,
             "end_period": end_period
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -337,7 +365,7 @@ Cypress.Commands.add('get_influencer_revenue', (postgresToken, influencer) => {
         method: 'GET',
         url: Cypress.env('api_host') + '/cami_influencers_summary_data?influencer_id=eq.' + influencer,
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -351,7 +379,7 @@ Cypress.Commands.add('get_bank_info', (postgresToken, country) => {
         method: 'GET',
         url: Cypress.env('api_host') + '/cam_bankname?country_id=eq.' + country,
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -382,7 +410,7 @@ Cypress.Commands.add('join_campaign', (postgresToken, influencer, campaign) => {
             "influencer_id_param": parseInt(influencer)
         },
         headers: {
-            authorization: 'Bearer ' + postgresToken
+            Authorization: 'Bearer ' + postgresToken
         }
     }
     cy.request(options).then(resp => {
@@ -472,7 +500,7 @@ Cypress.Commands.add('create_campaign', () => {
             //     }
         },
         headers: {
-            authorization: 'Bearer ' + Cypress.env('postgresToken_ad')
+            Authorization: 'Bearer ' + Cypress.env('postgresToken_ad')
         }
     }
     cy.request(options).then(resp => {
@@ -493,7 +521,7 @@ Cypress.Commands.add('review_campaign', (campaign_id, action) => {
             }
         },
         headers: {
-            authorization: 'Bearer ' + Cypress.env('postgresToken_ad')
+            Authorization: 'Bearer ' + Cypress.env('postgresToken_ad')
         }
     }
     cy.request(options).then(resp => {

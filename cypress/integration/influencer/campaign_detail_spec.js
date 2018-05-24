@@ -448,7 +448,7 @@ describe('Verify campaign detail', () => {
             })
         })
 
-        it.only('Verify revenue limit', () => {
+        it('Verify revenue limit', () => {
             // find ongoing campaign with revenue limit not null
             cy.get_campaigns(postgresToken, influencer).then($body => {
                 for (var i = 0; i < $body.length; i++) {
