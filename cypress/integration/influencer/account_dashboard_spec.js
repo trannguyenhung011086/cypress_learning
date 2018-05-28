@@ -101,7 +101,7 @@ describe('Verify account dashboard info', () => {
         cy.visit(url + '/profile') 
     })
 
-    // helper functions used in test cases
+    // helper functions grouping test steps
     function verify_personal_info() {
         cy.get('div.basic-info > div:nth-child(4) > p').as('category')
         cy.get('div.basic-info > div:nth-child(3) > p').as('introduce')

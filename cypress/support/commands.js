@@ -374,7 +374,21 @@ Cypress.Commands.add('get_influencer_revenue', (postgresToken, influencer) => {
     })
 })
 
-Cypress.Commands.add('get_bank_info', (postgresToken, country) => {
+Cypress.Commands.add('get_city', (postgresToken, country) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/cities?country_id=eq.' + country,
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body
+    })
+})
+
+Cypress.Commands.add('get_bank', (postgresToken, country) => {
     const options = {
         method: 'GET',
         url: Cypress.env('api_host') + '/cam_bankname?country_id=eq.' + country,
@@ -385,6 +399,35 @@ Cypress.Commands.add('get_bank_info', (postgresToken, country) => {
     cy.request(options).then(resp => {
         expect(resp.status).to.equal(200)
         return resp.body
+    })
+})
+
+Cypress.Commands.add('get_branch', (postgresToken, bank) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/bank_information?main_code=eq.' + bank,
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body
+    })
+})
+
+Cypress.Commands.add('get_qna', (postgresToken, language) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/qna?language=eq.' + language,
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        expect(resp.body[0].language).to.equal(language)
+        return resp.body[0].content
     })
 })
 
