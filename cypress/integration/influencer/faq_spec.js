@@ -53,14 +53,14 @@ describe('Verify FAQ info', () => {
     function check_language_content(lang) {
         cy.get_qna(postgresToken, lang).then($content => {
             content = $content
-
+            cy.log('Check language: ' + lang)
             // check total questions
             cy.get('.list-question').find('.item-question').should('have.length', content.length)
 
             // check each question
             for (var i = 0; i < content.length; i++) {
                 cy.get(`.item-question:nth-child(${i+1})`).find('.mat-expansion-panel-header > .mat-content > mat-panel-title > p').invoke('text').invoke('trim').should('equal', content[i].question)
-                cy.get(`.item-question:nth-child(${i+1})`).find('.answer-content').invoke('text').invoke('trim').should('equal', content[i].answer)
+                cy.get(`.item-question:nth-child(${i+1})`).find('.answer-content').invoke('text').invoke('trim').should('equal', content[i].answer.replace('<br/>', ''))
             }
         })
     }

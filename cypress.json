@@ -12,6 +12,6 @@
         "autoOpen": true
     },
     "projectId": "if2cyt",
-    "videoRecording": false,
+    "video": false,
     "pageLoadTimeout": 90000
 }
