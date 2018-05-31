@@ -186,7 +186,7 @@ Cypress.Commands.add('get_influencers_social_medias_view', (postgresToken, influ
 Cypress.Commands.add('get_influencers_social_media_detail_view', (postgresToken, influencer) => {
     const options = {
         method: 'GET',
-        url: Cypress.env('api_host') + '/influencers_social_media_detail_view?id=eq.' + influencer + '&is_fanpage=eq.false',
+        url: Cypress.env('api_host') + '/influencers_social_media_detail_view?id=eq.' + influencer,
         headers: {
             Authorization: 'Bearer ' + postgresToken
         }
@@ -239,6 +239,24 @@ Cypress.Commands.add('get_influencers_top_posts', (postgresToken, influencer) =>
     cy.request(options).then(resp => {
         expect(resp.status).to.equal(200)
         return resp.body
+    })
+})
+
+Cypress.Commands.add('fetch_facebook_fanpage', (postgresToken, influencer) => {
+    const options = {
+        method: 'POST',
+        url: 'https://3bygvqz499.execute-api.ap-southeast-1.amazonaws.com/stg/fetch_facebook_fanpage',
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        },
+        body: {
+            "influencer_id": parseInt(influencer),
+            "token": postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body['result']
     })
 })
 
