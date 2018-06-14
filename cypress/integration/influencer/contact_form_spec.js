@@ -9,6 +9,7 @@ describe('Verify contact form', () => {
 
     var postgresToken, name, email, phone, nation;
 
+    // call API to get data
     before(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
@@ -21,13 +22,52 @@ describe('Verify contact form', () => {
         })
     })
 
+    // log in
     beforeEach(() => {
         cy.login_facebook(accessToken, userID, signedRequest, client_id, client_secret, influencer).then($db_token => {
             postgresToken = $db_token['postgresToken']
+            cy.get_facebook_token(postgresToken, influencer)
         })
         cy.visit(url + '/contact')
     })
 
+    // helper functions grouping test steps
+    function verify_empty_data() {
+        email = email.slice(0, 30)
+
+        // clear data
+        cy.get(`#name[ng-reflect-model="${name}"]`).clear().should('be.empty')
+        cy.get(`input[name="email"][ng-reflect-model="${email}"]`).clear().should('be.empty')
+        cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().should('be.empty')
+        cy.get('textarea[name="enquiry"]').clear().should('be.empty')
+
+        // click submit
+        cy.get('.btn').click()
+
+        // check error alert
+        cy.get(':nth-child(1) > .alert > div').should('exist')
+        cy.get(':nth-child(2) > .alert > div').should('exist')
+        cy.get(':nth-child(3) > .alert > div').should('exist')
+        cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(1)').should('exist')
+        cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(2)').should('exist')
+    }
+
+    function verify_valid_data() {
+        // clear and input data
+        cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().type('123456789')
+        cy.get('textarea[name="enquiry"]').type('testing enquire email')
+
+        // click submit
+        cy.get('.btn').click()
+
+        // check sussessfull screen
+        cy.url().should('eql', url + '/contact/finished')
+        cy.get('img[src="../../assets/images/received-enquiry-icon.svg"]').should('be.visible')
+        cy.get('.thank_title').should('be.visible')
+        cy.get('.thank_text').should('be.visible')
+    }
+
+    // test case for API
     it('Verify submit contact form using API', () => {
         cy.request({
             method: 'POST',
@@ -48,57 +88,27 @@ describe('Verify contact form', () => {
         })
     })
 
+    // test cases for desktop theme
     context('Verify contact form on desktop', () => {
         it('Verify submit empty data', () => {
-            email = email.slice(0, 30)
-            cy.get(`#name[ng-reflect-model="${name}"]`).clear().should('be.empty')
-            cy.get(`input[name="email"][ng-reflect-model="${email}"]`).clear().should('be.empty')
-            cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().should('be.empty')
-            cy.get('textarea[name="enquiry"]').clear().should('be.empty')
-            cy.get('.btn').click()
-            cy.get(':nth-child(1) > .alert > div').should('exist')
-            cy.get(':nth-child(2) > .alert > div').should('exist')
-            cy.get(':nth-child(3) > .alert > div').should('exist')
-            cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(1)').should('exist')
-            cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(2)').should('exist')
+            verify_empty_data()
         })
 
         it('Verify submit required data', () => {
-            cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().type('123456789')
-            cy.get('textarea[name="enquiry"]').type('testing enquire email')
-            cy.get('.btn').click()
-            cy.url().should('eql', url + '/contact/finished')
-            cy.get('img[src="../../assets/images/received-enquiry-icon.svg"]').should('be.visible')
-            cy.get('.thank_title').should('be.visible')
-            cy.get('.thank_text').should('be.visible')
+            verify_valid_data()
         })
     })
 
+    // test cases for mobile theme
     context('Verify contact form on mobile', () => {
         it('Verify submit empty data', () => {
-            email = email.slice(0, 30)
             cy.viewport(375, 667)
-            cy.get(`#name[ng-reflect-model="${name}"]`).clear().should('be.empty')
-            cy.get(`input[name="email"][ng-reflect-model="${email}"]`).clear().should('be.empty')
-            cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().should('be.empty')
-            cy.get('textarea[name="enquiry"]').clear().should('be.empty')
-            cy.get('.btn').click()
-            cy.get(':nth-child(1) > .alert > div').should('exist')
-            cy.get(':nth-child(2) > .alert > div').should('exist')
-            cy.get(':nth-child(3) > .alert > div').should('exist')
-            cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(1)').should('exist')
-            cy.get('.two_collum > :nth-child(1) > :nth-child(3) > :nth-child(2)').should('exist')
+            verify_empty_data()
         })
 
         it('Verify submit required data', () => {
             cy.viewport(375, 667)
-            cy.get(`input[name="phoneNumber"][ng-reflect-model="${phone}"]`).clear().type('123456789')
-            cy.get('textarea[name="enquiry"]').type('testing enquire email')
-            cy.get('.btn').click()
-            cy.url().should('eql', url + '/contact/finished')
-            cy.get('img[src="../../assets/images/received-enquiry-icon.svg"]').should('be.visible')
-            cy.get('.thank_title').should('be.visible')
-            cy.get('.thank_text').should('be.visible')
+            verify_valid_data()
         })
     })
 })
