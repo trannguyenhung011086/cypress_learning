@@ -393,7 +393,7 @@ describe('Verify campaign list', () => {
             verify_sns(['facebook'], 'mobile')
         })
 
-        it.only('Verify filter by social network Instagram', () => {
+        it('Verify filter by social network Instagram', () => {
             cy.viewport(375, 667)
             verify_sns(['instagram'], 'mobile')
         })
