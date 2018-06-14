@@ -280,6 +280,20 @@ Cypress.Commands.add('get_campaigns', (postgresToken, influencer, categories = n
     })
 })
 
+Cypress.Commands.add('check_click_join', (postgresToken, influencer, cam_id) => {
+    const options = {
+        method: 'GET',
+        url: Cypress.env('api_host') + '/cam_campaign_influencers?campaign_id=eq.' + cam_id + '&influencer_id=eq.' + influencer,
+        headers: {
+            Authorization: 'Bearer ' + postgresToken
+        }
+    }
+    cy.request(options).then(resp => {
+        expect(resp.status).to.equal(200)
+        return resp.body
+    })
+})
+
 Cypress.Commands.add('get_campaigns_joined', (postgresToken, influencer, categories = null, keyword = null, social_medias = null) => {
     const options = {
         method: 'POST',

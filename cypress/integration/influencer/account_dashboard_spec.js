@@ -10,9 +10,9 @@ describe('Verify account dashboard info', () => {
     var postgresToken, categories, introduce, birthday, gender, name, nation, phone,
         facebook_username, facebook_followers, facebook_avatar, instagram_username, instagram_followers, instagram_avatar,
         twitter_username, twitter_followers, twitter_avatar, youtube_username, youtube_followers, youtube_avatar, youtube_is_channel,
-        facebook_likes, facebook_comments, instagram_likes, instagram_comments, twitter_likes, twitter_replies, twitter_retweets,
-        youtube_comments, youtube_likes, youtube_views, total_audience, reach, avg_age,
-        gender_list, nation_list, female_count, male_count, female_percent, male_percent, top_posts;
+        facebook_likes, facebook_comments, facebook_engagement, instagram_likes, instagram_comments, instagram_engagement,
+        twitter_likes, twitter_replies, twitter_retweets, twitter_engagement, youtube_comments, youtube_likes, youtube_views, youtube_engagement,
+        total_audience, reach, avg_age, gender_list, nation_list, female_count, male_count, female_percent, male_percent, top_posts;
 
     // call APIs to get data
     before(() => {
@@ -52,20 +52,24 @@ describe('Verify account dashboard info', () => {
                 facebook_followers = $body[0].facebook_followers
                 facebook_likes = $body[0].facebook_likes
                 facebook_comments = $body[0].facebook_comments
+                facebook_engagement = $body[0].fb_engagement_rate
                 instagram_username = $body[0].instagram_username
                 instagram_followers = $body[0].instagram_followers
                 instagram_likes = $body[0].instagram_likes
                 instagram_comments = $body[0].instagram_comments
+                instagram_engagement = $body[0].ins_engagement_rate
                 twitter_username = $body[0].twitter_username
                 twitter_followers = $body[0].twitter_followers
                 twitter_likes = $body[0].twitter_likes
                 twitter_retweets = $body[0].twitter_retweets
                 twitter_replies = $body[0].twitter_replies
+                twitter_engagement = $body[0].tw_engagement_rate
                 youtube_username = $body[0].youtube_username
                 youtube_followers = $body[0].youtube_followers
                 youtube_comments = $body[0].youtube_comments
                 youtube_likes = $body[0].youtube_likes
                 youtube_views = $body[0].youtube_views
+                youtube_engagement = $body[0].yt_engagement_rate
                 youtube_is_channel = $body[0].youtube_is_channel
                 reach = $body[0].reach
                 total_audience = $body[0].audience
@@ -165,6 +169,7 @@ describe('Verify account dashboard info', () => {
         if (facebook_followers > 0) {
             cy.get('@main_avatar').then($el => {
                 expect($el.attr('style')).to.include(facebook_avatar)
+                expect(facebook_avatar).to.match(/amazonaws/)
             })
         }
 
@@ -205,18 +210,23 @@ describe('Verify account dashboard info', () => {
         }
     }
 
-    function verify_reach() {
+    function verify_engagement() {
         cy.get('.sns_infomation_reach > h5').as('total_reach')
         cy.get(':nth-child(1) > .engagement_item > :nth-child(1) > :nth-child(1)').as('facebook_likes')
         cy.get(':nth-child(1) > .engagement_item > :nth-child(2) > :nth-child(1)').as('facebook_comments')
+        cy.get(':nth-child(1) > .engagement_item > :nth-child(4) > :nth-child(1)').as('facebook_engagement')
         cy.get(':nth-child(2) > .engagement_item > :nth-child(1) > :nth-child(1)').as('instagram_likes')
         cy.get(':nth-child(2) > .engagement_item > :nth-child(2) > :nth-child(1)').as('instagram_comments')
+        cy.get(':nth-child(2) > .engagement_item > :nth-child(4) > :nth-child(1)').as('instagram_engagement')
         cy.get(':nth-child(3) > .engagement_item > :nth-child(1) > :nth-child(1)').as('twitter_retweets')
         cy.get(':nth-child(3) > .engagement_item > :nth-child(2) > :nth-child(1)').as('twitter_replies')
         cy.get(':nth-child(3) > .engagement_item > :nth-child(3) > :nth-child(1)').as('twitter_likes')
+        cy.get(':nth-child(3) > .engagement_item > :nth-child(4) > :nth-child(1)').as('twitter_engagement')
         cy.get(':nth-child(4) > .engagement_item > :nth-child(1) > :nth-child(1)').as('youtube_likes')
         cy.get(':nth-child(4) > .engagement_item > :nth-child(2) > :nth-child(1)').as('youtube_comments')
         cy.get(':nth-child(4) > .engagement_item > :nth-child(3) > :nth-child(1)').as('youtube_views')
+        cy.get(':nth-child(4) > .engagement_item > :nth-child(4) > :nth-child(1)').as('youtube_engagement')
+        cy.wait(2000)
 
         // check total reach
         cy.get('@total_reach').invoke('text').then(text => {
@@ -227,6 +237,7 @@ describe('Verify account dashboard info', () => {
         if (facebook_followers == null) {
             cy.get('@facebook_likes').invoke('text').should('equal', '-')
             cy.get('@facebook_comments').invoke('text').should('equal', '-')
+            cy.get('@facebook_engagement').invoke('text').should('equal', '-')
         } else {
             cy.get('@facebook_likes').invoke('text').then(text => {
                 expect(Math.round(facebook_likes)).to.equal(parseInt(text))
@@ -234,10 +245,14 @@ describe('Verify account dashboard info', () => {
             cy.get('@facebook_comments').invoke('text').then(text => {
                 expect(Math.round(facebook_comments)).to.equal(parseInt(text))
             })
+            cy.get('@facebook_engagement').invoke('text').then(text => {
+                expect(Math.round(facebook_engagement * 10) / 10).to.equal(parseFloat(text.replace('%', '')))
+            })
         }
         if (instagram_followers == null) {
             cy.get('@instagram_likes').invoke('text').should('equal', '-')
             cy.get('@instagram_comments').invoke('text').should('equal', '-')
+            cy.get('@instagram_engagement').invoke('text').should('equal', '-')
         } else {
             cy.get('@instagram_likes').invoke('text').then(text => {
                 expect(Math.round(instagram_likes)).to.equal(parseInt(text))
@@ -245,12 +260,16 @@ describe('Verify account dashboard info', () => {
             cy.get('@instagram_comments').invoke('text').then(text => {
                 expect(Math.round(instagram_comments)).to.equal(parseInt(text))
             })
+            cy.get('@instagram_engagement').invoke('text').then(text => {
+                expect(Math.round(instagram_engagement * 10) / 10).to.equal(parseFloat(text.replace('%', '')))
+            })
         }
 
         if (twitter_followers == null) {
             cy.get('@twitter_likes').invoke('text').should('equal', '-')
             cy.get('@twitter_comments').invoke('text').should('equal', '-')
             cy.get('@twitter_likes').invoke('text').should('equal', '-')
+            cy.get('@twitter_engagement').invoke('text').should('equal', '-')
         } else {
             cy.get('@twitter_likes').invoke('text').then(text => {
                 expect(Math.round(twitter_likes)).to.equal(parseInt(text))
@@ -261,12 +280,16 @@ describe('Verify account dashboard info', () => {
             cy.get('@twitter_replies').invoke('text').then(text => {
                 expect(Math.round(twitter_replies)).to.equal(parseInt(text))
             })
+            cy.get('@twitter_engagement').invoke('text').then(text => {
+                expect(Math.round(twitter_engagement * 10) / 10).to.equal(parseFloat(text.replace('%', '')))
+            })
         }
 
         if (youtube_followers == null) {
             cy.get('@youtube_likes').invoke('text').should('equal', '-')
             cy.get('@youtube_comments').invoke('text').should('equal', '-')
             cy.get('@youtube_views').invoke('text').should('equal', '-')
+            cy.get('@youtube_engagement').invoke('text').should('equal', '-')
         } else {
             cy.get('@youtube_likes').invoke('text').then(text => {
                 expect(Math.round(youtube_likes)).to.equal(parseInt(text))
@@ -276,6 +299,9 @@ describe('Verify account dashboard info', () => {
             })
             cy.get('@youtube_views').invoke('text').then(text => {
                 expect(Math.round(youtube_views)).to.equal(parseInt(text))
+            })
+            cy.get('@youtube_engagement').invoke('text').then(text => {
+                expect(Math.round(youtube_engagement * 10) / 10).to.equal(parseFloat(text.replace('%', '')))
             })
         }
     }
@@ -389,7 +415,7 @@ describe('Verify account dashboard info', () => {
         })
 
         it('Verify social network reach and engagement', () => {
-            verify_reach()
+            verify_engagement()
         })
 
         it('Verify social network audience', () => {
